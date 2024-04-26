@@ -3,6 +3,7 @@ import express from "express";
 import "./db-connect.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
+import router from "./routes/tasks.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -20,6 +21,7 @@ if (allowedOrigins.includes(origin) || !origin) {
 }
 
 app.use(cors(corsOptions));
+app.use("/tasks", router);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
