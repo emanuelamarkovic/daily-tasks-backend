@@ -13,7 +13,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:19006",
-  "https://daily-tasks-app-my36.onrender.com/",
+  "https://daily-tasks-app-my36.onrender.com",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
