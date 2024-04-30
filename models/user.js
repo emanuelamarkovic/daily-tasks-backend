@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
-  name: {
+  username: {
     type: String,
     required: [true, "you have to enter the name!"],
     minlength: [3, "name must be at least 3 characters!"],
