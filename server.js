@@ -11,11 +11,14 @@ const app = express();
 app.use(express.json());
 
 const allowedOrigins = [
-  "http://localhost:19006",
+  "http://localhost:19007",
   "https://daily-tasks-app-my36.onrender.com/",
+  "exp://192.168.178.27:8082",
 ];
+
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log("origin", origin);
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
