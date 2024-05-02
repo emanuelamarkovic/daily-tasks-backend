@@ -4,6 +4,7 @@ import "./db-connect.js";
 import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
+import userRouter from "./routes/userRoutes.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -11,9 +12,8 @@ const app = express();
 app.use(express.json());
 
 const allowedOrigins = [
-  "http://localhost:19007",
-  "https://daily-tasks-app-my36.onrender.com/",
-  "exp://192.168.178.27:8082",
+  "http://localhost:19006",
+  "https://daily-tasks-app-my36.onrender.com",
 ];
 
 const corsOptions = {
@@ -29,6 +29,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use("/tasks", router);
+app.use("/users", userRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
