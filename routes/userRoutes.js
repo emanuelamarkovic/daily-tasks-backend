@@ -1,4 +1,5 @@
 import express from "express";
+import { validate, userValidator } from "../Middleware/userValidator/user-Validator.js";
 import {
   signup,
   login,
@@ -8,8 +9,8 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.post("/signup", signup);
-userRouter.post("/login", login);
+userRouter.post("/signup", userValidator,validate, signup);
+userRouter.post("/login",userValidator, validate, login);
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/logout", logout);
 
