@@ -1,5 +1,5 @@
 // routes/tasks.js
-
+import { toDoValidator,validate } from "../Middleware/todoValidator/todos-Validator.js";
 import express from "express";
 import {
   getAllTasks,
@@ -10,12 +10,12 @@ import {
 
 const router = express.Router();
 
-router.get("/tasks", getAllTasks);
+router.get("", getAllTasks);
 
-router.post("/tasks", createTask);
+router.post("",toDoValidator, validate, createTask);
 
-router.put("/tasks/:id", updateTask);
+router.put("/:id", updateTask);
 
-router.delete("/tasks/:id", deleteTask);
+router.delete("/:id", deleteTask);
 
 export default router;
