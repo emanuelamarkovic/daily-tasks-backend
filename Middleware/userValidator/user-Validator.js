@@ -2,16 +2,12 @@ import { body, validationResult } from "express-validator";
 
 const userValidator = [
   body("email").isEmail().withMessage("Invalid email").notEmpty(),
-  body("username")
-    .notEmpty()
-    .isLength({ min: 3 })
-    .withMessage("Name is required")
-    .notEmpty(),
   body("password")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters")
     .notEmpty()
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+    .matches(/^[0-9a-zA-Z]+$/, "i")
+    .withMessage("Password must contain letters and numbers only"),
 ];
 
 const validate = (req, res, next) => {
