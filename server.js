@@ -30,6 +30,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use("/tasks", router);
 app.use("/users", userRouter);
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).send({
+    error: {
+      message: err.message,
+    },
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
