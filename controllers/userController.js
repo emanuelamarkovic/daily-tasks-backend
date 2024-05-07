@@ -92,6 +92,36 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { userId, token } = req.params;
+  const { password } = req.body;
+
+  jwt.verify(token, process.env.SECRETKEY, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid or expired token." });
+    } else {
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found." });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        return res
+          .status(200)
+          .json({ message: "Password reset successfully." });
+      } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({
+          message: "Error resetting password. Please try again later.",
+        });
+      }
+    }
+  });
+};
+
 const logout = async (req, res) => {
   try {
     res.clearCookie("token").status(200).json({ message: "logout successful" });
@@ -100,4 +130,4 @@ const logout = async (req, res) => {
   }
 };
 
-export { signup, login, forgotPassword, logout };
+export { signup, login, forgotPassword, resetPassword, logout };
