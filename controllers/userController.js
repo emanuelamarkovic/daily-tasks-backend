@@ -5,21 +5,21 @@ import { sendPasswordResetEmail } from "../services/emailService.js";
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
+
   try {
-    const salterRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, salterRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      todos: [],
+      tasks: [],
     });
-    const userExits = await User.findOne({ username });
-    if (userExits) {
+    const userExists = await User.findOne({ username });
+    if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
-    await User.create(newUser);
-    delete newUser.password;
+    await newUser.save();
+    newUser.password = undefined;
     res.status(200).json({ message: "New User added! 🐒", newUser });
   } catch (error) {
     console.error("Error signing up:", error);
