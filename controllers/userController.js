@@ -48,16 +48,19 @@ const login = async (req, res) => {
     const user = foundUser.toObject();
     delete user.password;
     const payload = { userID: user._id };
-    const token = jwt.sign(payload, process.env.SECRETKEY, {
+    const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
-    console.log("token", token);
+    const refreshToken=jwt.sign(payload,process.env.REFRESH_TOKENS, {expiresIn:"1d"})
+  
     res
-      .cookie("token", token, {
+      .cookie("accesstoken", accesstoken, {
+        httpOnly: true,
+      })   .cookie("refreshToken", refreshToken, {
         httpOnly: true,
       })
       .status(200)
-      .json({ message: "login successfully", user });
+      .json({ message: "login successfully", role:user.role, refreshToken, accesstoken });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: error.message });
