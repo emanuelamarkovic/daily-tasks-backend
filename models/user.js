@@ -22,7 +22,6 @@ const userSchema = new Schema({
     required: [true, "you have to enter the password!"],
     minlength: [8, "password must be at least 8 characters!"],
   },
-  todos: [{ type: Schema.Types.ObjectId, ref: "Todo" }],
   createdAt: {
     type: Date,
     default: Date.now,
