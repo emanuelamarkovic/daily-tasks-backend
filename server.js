@@ -5,10 +5,12 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 
 const port = process.env.PORT;
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 
 const allowedOrigins = [
@@ -25,6 +27,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
