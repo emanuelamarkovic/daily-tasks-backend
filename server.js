@@ -5,7 +5,7 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
-
+import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
 const port = process.env.PORT;
 const app = express();
 
@@ -38,6 +38,8 @@ app.use((err, req, res, next) => {
     },
   });
 });
+
+app.use(refreshAccessToken)
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

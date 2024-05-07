@@ -14,7 +14,7 @@ const userSchema = new Schema({
   },   gender: {
     type: String,
     enum: genders,
-    required: true
+    required: false
 },
   email: {
     type: String,
