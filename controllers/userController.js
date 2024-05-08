@@ -3,6 +3,21 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().populate('todos');
+    console.log(users)
+    res.status(200).json({  users });
+
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Fetching users failed, please try again later." })
+  }
+}
+
+
+
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -141,4 +156,4 @@ const uploadAvatarImg = async (req, res) => {
 };
 
 
-export { signup, login, forgotPassword, logout, uploadAvatarImg };
+export { signup, login, forgotPassword, logout, uploadAvatarImg, getUsers };

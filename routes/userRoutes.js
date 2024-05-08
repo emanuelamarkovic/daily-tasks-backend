@@ -5,6 +5,7 @@ import {
 } from "../Middleware/userValidator/user-Validator.js";
 import { cloudinaryMulter } from "../upload-Image.js";
 import {
+  getUsers,
   signup,
   login,
   forgotPassword,
@@ -12,7 +13,7 @@ import {
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
-
+userRouter.get("/",getUsers)
 userRouter.post("/signup", userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
 userRouter.post("/forgot-password", forgotPassword);
