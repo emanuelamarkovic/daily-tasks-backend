@@ -3,6 +3,23 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
+const getAuthUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    console.log(
+      "🚀 ~ file: userController.js ~ line 10 ~ getAuthUser ~ userId",
+      userId
+    );
+    const user = await User.findById(userId);
+    const userObj = user.toObject();
+    delete userObj.password;
+    res.status(200).json({ user: userObj });
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -65,7 +82,7 @@ const login = async (req, res) => {
 };
 
 const generateResetToken = async () => {
-  const token = await bcrypt.hash(Math.random().toString(36).substring(2), 10);
+  const token = bcrypt.hash(Math.random().toString(36).substring(2));
   return token;
 };
 
@@ -73,13 +90,14 @@ const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log("user:", user);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    const resetToken = generateResetToken(user);
-
-    await sendPasswordResetEmail(user.email, resetToken);
+    const resetToken = await generateResetToken(user);
+    console.log("resetToken:", resetToken);
+    await sendPasswordResetEmail(user.email, user._id, resetToken);
 
     res
       .status(200)
@@ -94,32 +112,40 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { userId, token } = req.params;
-  const { password } = req.body;
+  const { newPassword, confirmPassword } = req.body;
+  console.log("userId:", userId);
+  console.log("newpassword:", newPassword);
+  console.log("confirmPassword:", confirmPassword);
 
-  jwt.verify(token, process.env.SECRETKEY, async (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: "Invalid or expired token." });
-    } else {
-      try {
-        const user = await User.findById(userId);
-        if (!user) {
-          return res.status(404).json({ message: "User not found." });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
-        await user.save();
+  if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
+    return res
+      .status(400)
+      .json({ message: "Passwords do not match or are empty." });
+  }
 
-        return res
-          .status(200)
-          .json({ message: "Password reset successfully." });
-      } catch (error) {
-        console.error("Error resetting password:", error);
-        res.status(500).json({
-          message: "Error resetting password. Please try again later.",
-        });
+  try {
+    jwt.verify(token, process.env.SECRETKEY, async (err, decoded) => {
+      if (err) {
+        console.error("Error verifying token:", err);
+        return res.status(401).json({ message: "Invalid or expired token." });
       }
-    }
-  });
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+      user.password = hashedPassword;
+      await user.save();
+      console.log("Password reset successfully.");
+      return res.status(200).json({ message: "Password reset successfully." });
+    });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({
+      message: "Error resetting password. Please try again later.",
+    });
+  }
 };
 
 const logout = async (req, res) => {
@@ -130,4 +156,4 @@ const logout = async (req, res) => {
   }
 };
 
-export { signup, login, forgotPassword, resetPassword, logout };
+export { getAuthUser, signup, login, forgotPassword, resetPassword, logout };
