@@ -3,22 +3,20 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
-const getAuthUser = async (req, res) => {
+
+const getUsers = async (req, res) => {
   try {
-    const userId = req.userId;
-    console.log(
-      "🚀 ~ file: userController.js ~ line 10 ~ getAuthUser ~ userId",
-      userId
-    );
-    const user = await User.findById(userId);
-    const userObj = user.toObject();
-    delete userObj.password;
-    res.status(200).json({ user: userObj });
+    const users = await User.find().populate('todos');
+    console.log(users)
+    res.status(200).json({  users });
+
   } catch (error) {
-    console.error("Error getting user:", error);
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Fetching users failed, please try again later." })
   }
-};
+}
+
+
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -65,16 +63,27 @@ const login = async (req, res) => {
     const user = foundUser.toObject();
     delete user.password;
     const payload = { userID: user._id };
-    const token = jwt.sign(payload, process.env.SECRETKEY, {
+    const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
-    console.log("token", token);
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKENS, {
+      expiresIn: "1d",
+    });
+
     res
-      .cookie("token", token, {
+      .cookie("accesstoken", accesstoken, {
+        httpOnly: true,
+      })
+      .cookie("refreshToken", refreshToken, {
         httpOnly: true,
       })
       .status(200)
-      .json({ message: "login successfully", user });
+      .json({
+        message: "login successfully",
+        role: user.role,
+        refreshToken,
+        accesstoken,
+      });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: error.message });
@@ -156,4 +165,34 @@ const logout = async (req, res) => {
   }
 };
 
-export { getAuthUser, signup, login, forgotPassword, resetPassword, logout };
+
+
+const uploadAvatarImg = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    console.log(id)
+    console.log(req.file)
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
+
+    const { secure_url, public_id } = fileImg;
+
+    const userToUpdate = await userModel.findByIdAndUpdate(
+      id,
+      { avatarImg: { url: secure_url, id: public_id } },
+      { new: true }
+    );
+
+    if (!userToUpdate) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    const updatedUser = userToUpdate.toObject();
+    delete updatedUser.password;
+    res.json({ message: "User updated", updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+export { signup, login, forgotPassword, logout, uploadAvatarImg, getUsers };
