@@ -111,4 +111,34 @@ const logout = async (req, res) => {
   }
 };
 
-export { signup, login, forgotPassword, logout };
+
+
+const uploadAvatarImg = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    console.log(id)
+    console.log(req.file)
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
+
+    const { secure_url, public_id } = fileImg;
+
+    const userToUpdate = await userModel.findByIdAndUpdate(
+      id,
+      { avatarImg: { url: secure_url, id: public_id } },
+      { new: true }
+    );
+
+    if (!userToUpdate) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    const updatedUser = userToUpdate.toObject();
+    delete updatedUser.password;
+    res.json({ message: "User updated", updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+export { signup, login, forgotPassword, logout, uploadAvatarImg };

@@ -1,6 +1,21 @@
 import { model, Schema } from "mongoose";
+
+
+const avatarImgSchema = new Schema(
+  {
+    url: {
+      type: String,
+      default: "https://ionicframework.com/docs/img/demos/avatar.svg",
+    },
+    id: String
+
+  },
+  {  id: false }
+);
 const genders = ['male', 'female', 'other'];
+
 const roles=['user', 'admin']
+
 const userSchema = new Schema({
   username: {
     type: String,
@@ -27,6 +42,8 @@ const userSchema = new Schema({
       message: (props) => `${props.value} is not a valid email!`,
     },
   },
+  avatarImg:avatarImgSchema,
+  
   password: {
     type: String,
     required: [true, "you have to enter the password!"],
