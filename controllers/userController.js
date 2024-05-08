@@ -3,20 +3,32 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
-
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find().populate('todos');
-    console.log(users)
-    res.status(200).json({  users });
-
+    const users = await User.find().populate("todos");
+    console.log(users);
+    res.status(200).json({ users });
   } catch (error) {
     console.error("Error fetching users:", error);
-    res.status(500).json({ success: false, message: "Fetching users failed, please try again later." })
+    res.status(500).json({
+      success: false,
+      message: "Fetching users failed, please try again later.",
+    });
   }
-}
+};
 
-
+const getAuthUser = async (req, res) => {
+  try {
+    const userID = req.userID;
+    console.log("🚀 ~ getAuthUser ~ userID:", userID);
+    const foundUser = await User.findById(userID);
+    const user = foundUser.toObject();
+    delete user.password;
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -165,14 +177,11 @@ const logout = async (req, res) => {
   }
 };
 
-
-
 const uploadAvatarImg = async (req, res) => {
   try {
-
     const { id } = req.params;
-    console.log(id)
-    console.log(req.file)
+    console.log(id);
+    console.log(req.file);
     const fileImg = await cloudinary.uploader.upload(req.file.path);
 
     const { secure_url, public_id } = fileImg;
@@ -194,5 +203,13 @@ const uploadAvatarImg = async (req, res) => {
   }
 };
 
-
-export { signup, login, forgotPassword, logout, uploadAvatarImg, getUsers };
+export {
+  getAuthUser,
+  signup,
+  login,
+  forgotPassword,
+  resetPassword,
+  logout,
+  uploadAvatarImg,
+  getUsers,
+};
