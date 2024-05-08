@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -123,7 +124,7 @@ const uploadAvatarImg = async (req, res) => {
 
     const { secure_url, public_id } = fileImg;
 
-    const userToUpdate = await userModel.findByIdAndUpdate(
+    const userToUpdate = await User.findByIdAndUpdate(
       id,
       { avatarImg: { url: secure_url, id: public_id } },
       { new: true }
