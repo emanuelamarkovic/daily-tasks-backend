@@ -7,6 +7,7 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
+import { DEVELOPER_IP, LOCAL_IP } from "./config.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -17,6 +18,8 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:19006",
   "https://daily-tasks-app-my36.onrender.com",
+  `http:${LOCAL_IP}:8081`,
+  `exp://${DEVELOPER_IP}:8081`,
 ];
 
 const corsOptions = {

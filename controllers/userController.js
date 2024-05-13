@@ -103,7 +103,7 @@ const login = async (req, res) => {
 };
 
 const generateResetToken = async () => {
-  const token = bcrypt.hash(Math.random().toString(36).substring(2));
+  const token = bcrypt.hash(Math.random().toString(36).substring(2), 10);
   return token;
 };
 
