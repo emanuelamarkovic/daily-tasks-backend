@@ -7,14 +7,11 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
-import { DEVELOPER_IP, LOCAL_IP } from "./config.js";
-import router from "./routes/tasks.js";
-import { MOBILE_IP } from "./config.js";
+import { LOCAL_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
 
 const port = process.env.PORT;
 const app = express();
-
 
 app.use(cookieParser());
 app.use(express.json());
