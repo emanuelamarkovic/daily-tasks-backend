@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const getUsers = async (req, res) => {
   try {
@@ -35,7 +36,11 @@ const signup = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    const { secure_url, public_id } = fileImg;
     const newUser = new User({
+      avatarImg: { url: secure_url, id: public_id },
       username,
       email,
       password: hashedPassword,
@@ -186,7 +191,7 @@ const uploadAvatarImg = async (req, res) => {
 
     const { secure_url, public_id } = fileImg;
 
-    const userToUpdate = await userModel.findByIdAndUpdate(
+    const userToUpdate = await User.findByIdAndUpdate(
       id,
       { avatarImg: { url: secure_url, id: public_id } },
       { new: true }
