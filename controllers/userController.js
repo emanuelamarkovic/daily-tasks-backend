@@ -9,7 +9,11 @@ const signup = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    const { secure_url, public_id } = fileImg;
     const newUser = new User({
+      avatarImg: { url: secure_url, id: public_id },
       username,
       email,
       password: hashedPassword,

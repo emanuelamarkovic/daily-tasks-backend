@@ -13,7 +13,7 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.post("/signup", userValidator, validate, signup);
+userRouter.post("/signup",cloudinaryMulter.single("image"), userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/logout", logout);
