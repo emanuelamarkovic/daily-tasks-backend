@@ -59,6 +59,7 @@ const signup = async (req, res) => {
       .status(500)
       .json({ message: "Error signing up. Please try again later." });
   }
+  
 };
 
 const login = async (req, res) => {
@@ -69,8 +70,7 @@ const login = async (req, res) => {
     if (!foundUser) {
       return res
         .status(404)
-
-        .json({ message: "user email or password are false!" });
+        .json({ message: "user email or password are falase!" });
     }
     const passwordsMatched = await bcrypt.compare(password, foundUser.password);
     if (!passwordsMatched) {
