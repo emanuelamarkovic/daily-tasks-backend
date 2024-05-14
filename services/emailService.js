@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { MOBILE_IP } from "../config.js";
 
 const transporter = nodemailer.createTransport({
   service: "hotmail",

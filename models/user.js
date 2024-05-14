@@ -1,40 +1,27 @@
 import { model, Schema } from "mongoose";
 
-
-const avatarImgSchema = new Schema(
-  {
-    url: {
-      type: String,
-      default: "https://ionicframework.com/docs/img/demos/avatar.svg",
-    },
-    id: String
-
-  },
-  {  id: false }
-);
-const genders = ['male', 'female', 'other'];
-
-const roles=['user', 'admin']
-
 const userSchema = new Schema({
   username: {
     type: String,
     required: [true, "you have to enter the name!"],
     minlength: [3, "name must be at least 3 characters!"],
   },
+
   role: {
     type: String,
     enum: roles,
-    default: 'user'
-  },   gender: {
+    default: "user",
+  },
+  gender: {
     type: String,
     enum: genders,
-    required: false
-},
+    required: false,
+  },
   email: {
     type: String,
     required: [true, "you have to enter the email!"],
     unique: true,
+    trim: true,
     validate: {
       validator: function (v) {
         return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
@@ -42,8 +29,6 @@ const userSchema = new Schema({
       message: (props) => `${props.value} is not a valid email!`,
     },
   },
-  avatarImg:avatarImgSchema,
-  
   password: {
     type: String,
     required: [true, "you have to enter the password!"],
@@ -54,8 +39,6 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-
-
 });
 
 const User = model("User", userSchema);
