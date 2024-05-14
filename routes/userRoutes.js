@@ -18,8 +18,8 @@ import { authenticate } from "../Middleware/userValidator/authenticate.js";
 import { tokenValid } from "../Middleware/userValidator/tokenValid.js";
 
 const userRouter = express.Router();
-userRouter.get("/", getUsers);
-userRouter.post("/signup", userValidator, validate, signup);
+
+userRouter.post("/signup",cloudinaryMulter.single("image"), userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/reset-password/:userId/:token", resetPassword);
