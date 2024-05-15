@@ -11,7 +11,7 @@ import {
   forgotPassword,
   resetPassword,
   logout,
-  uploadAvatarImg,
+  uploadAvatarImg,getAuthUser
 } from "../controllers/userController.js";
 import { authenticate } from "../Middleware/userValidator/authenticate.js";
 import { tokenValid } from "../Middleware/userValidator/tokenValid.js";
@@ -29,6 +29,6 @@ userRouter.post("/auth-user-data").get(authenticate, getAuthUser);
 
 userRouter
   .route("/upload-avatar/:id")
-  .patch(cloudinaryMulter.single("image"), uploadAvatarImg);
+  .put(cloudinaryMulter.single("image"), uploadAvatarImg);
 
 export default userRouter;
