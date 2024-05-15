@@ -5,10 +5,9 @@ import {
 } from "../Middleware/userValidator/user-Validator.js";
 import { cloudinaryMulter } from "../upload-Image.js";
 import {
-  getAuthUser,
-  getUsers,
   signup,
   login,
+  getUsers,
   forgotPassword,
   resetPassword,
   logout,
@@ -19,8 +18,9 @@ import { tokenValid } from "../Middleware/userValidator/tokenValid.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/signup",cloudinaryMulter.single("image"), userValidator, validate, signup);
+userRouter.post("/signup", userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
+userRouter.get("/",getUsers)
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/reset-password/:userId/:token", resetPassword);
 userRouter.post("/logout", logout);
