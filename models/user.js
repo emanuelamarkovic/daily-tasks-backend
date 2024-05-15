@@ -5,6 +5,7 @@ const avatarImgSchema = new Schema(
     url: {
       type: String,
       default: "https://ionicframework.com/docs/img/demos/avatar.svg",
+      required:false
     },
     id: String,
   },
