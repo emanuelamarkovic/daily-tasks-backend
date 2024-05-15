@@ -5,17 +5,19 @@ import {
 } from "../Middleware/userValidator/user-Validator.js";
 import { cloudinaryMulter } from "../upload-Image.js";
 import {
-  getUsers,
+
   signup,
   login,
+  getUsers,
   forgotPassword,
   logout, uploadAvatarImg
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
-userRouter.get("/",getUsers)
+
 userRouter.post("/signup", userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
+userRouter.get("/",getUsers)
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/logout", logout);
 userRouter  .route("/upload-avatar/:id")
