@@ -11,13 +11,14 @@ import {
   forgotPassword,
   resetPassword,
   logout,
-  uploadAvatarImg,getAuthUser
+  uploadAvatarImg,getAuthUser,
+  getUserById
 } from "../controllers/userController.js";
 import { authenticate } from "../Middleware/userValidator/authenticate.js";
 import { tokenValid } from "../Middleware/userValidator/tokenValid.js";
 
 const userRouter = express.Router();
-
+userRouter.get("/:id", getUserById);
 userRouter.post("/signup", userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
 userRouter.get("/",getUsers)

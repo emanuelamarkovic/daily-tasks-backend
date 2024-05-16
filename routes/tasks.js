@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("", getAllTasks);
 
-router.post("",toDoValidator, validate, createTask);
+router.post("/addTask", createTask);
 
 router.put("/:id", updateTask);
 

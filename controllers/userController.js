@@ -4,6 +4,24 @@ import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 import { v2 as cloudinary } from "cloudinary";
 
+
+ const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error finding user", error });
+  }
+};
+
+
 const getUsers = async (req, res) => {
   try {
     const users = await User.find().populate("todos");
@@ -218,4 +236,5 @@ export {
   logout,
   uploadAvatarImg,
   getUsers,
+  getUserById
 };
