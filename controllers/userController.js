@@ -98,7 +98,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userID: user._id };
+    const payload = { userD: user };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
