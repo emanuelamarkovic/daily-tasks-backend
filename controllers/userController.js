@@ -74,7 +74,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userD: user };
+    const payload = { userId: user._id };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
@@ -92,7 +92,7 @@ const login = async (req, res) => {
       .status(200)
       .json({
         message: "login successfully",
-        role: user.role,
+        user,
         refreshToken,
         accesstoken,
       });
