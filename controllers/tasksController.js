@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find().populate("users");
+    const tasks = await User.find().populate("todos");
     res.json(tasks);
   } catch (error) {
     console.error(error);
@@ -62,5 +62,6 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Serverfehler" });
   }
 };
+
 
 

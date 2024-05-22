@@ -116,6 +116,7 @@ const login = async (req, res) => {
       .status(200)
       .json({
         message: "login successfully",
+        user,
         role: user.role,
         refreshToken,
         accesstoken,
@@ -226,6 +227,21 @@ const uploadAvatarImg = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+ const getUserWithTasks = async (req, res) => {
+  const { id } = req.params;
+console.log("sfsf",req.params)
+  try {
+    const user = await User.findById(id).populate("todos");
+    console.log(user)
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: `Error fetching user: ${error.message}` });
+  }
+};
 
 export {
   getAuthUser,
@@ -236,5 +252,5 @@ export {
   logout,
   uploadAvatarImg,
   getUsers,
-  getUserById
+  getUserById,getUserWithTasks
 };
