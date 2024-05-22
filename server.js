@@ -5,6 +5,7 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
+import { DEVELOPER_IP, MOBILE_IP } from "./config.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -14,6 +15,8 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:19006",
   "https://daily-tasks-app-my36.onrender.com",
+  `http://${DEVELOPER_IP}:8081`,
+  `http://${MOBILE_IP}:8081`,
 ];
 
 const corsOptions = {
@@ -40,6 +43,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://${DEVELOPER_IP}:${port}`);
   logEndPoints(app, port);
 });
