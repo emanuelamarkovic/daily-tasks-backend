@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { MOBILE_IP } from "../config.js";
 
 const transporter = nodemailer.createTransport({
   service: "hotmail",
@@ -8,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
+const sendPasswordResetEmail = async (recipientEmail, userId, token) => {
   const mailOptions = {
     from: "emanuela.markovic@hotmail.com",
     to: recipientEmail,

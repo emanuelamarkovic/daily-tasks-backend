@@ -5,11 +5,15 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
-import { DEVELOPER_IP, MOBILE_IP } from "./config.js";
+import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
+import cookieParser from "cookie-parser";
+import { MOBILE_IP } from "./config.js";
+import { DEVELOPER_IP } from "./config.js";
 
-const port = process.env.PORT;
 const app = express();
+const port = process.env.PORT;
 
+app.use(cookieParser());
 app.use(express.json());
 
 const allowedOrigins = [
@@ -28,11 +32,17 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use("/tasks", router);
 app.use("/users", userRouter);
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).send({
@@ -41,6 +51,8 @@ app.use((err, req, res, next) => {
     },
   });
 });
+
+app.use(refreshAccessToken);
 
 app.listen(port, () => {
   console.log(`Server is running on http://${DEVELOPER_IP}:${port}`);

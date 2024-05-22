@@ -9,6 +9,10 @@ const taskSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  users: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -17,6 +21,7 @@ const taskSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  user: { type: Schema.Types.ObjectId, ref: "User" }
 });
 
 const Task = model("Task", taskSchema);
