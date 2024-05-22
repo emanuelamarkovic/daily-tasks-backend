@@ -7,11 +7,11 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
-import { LOCAL_IP } from "./config.js";
+import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
 
-const port = process.env.PORT;
 const app = express();
+const port = process.env.PORT;
 
 app.use(cookieParser());
 app.use(express.json());
@@ -19,8 +19,8 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:19006",
   "https://daily-tasks-app-my36.onrender.com",
-  `http:${LOCAL_IP}:8081`,
-  `exp://${DEVELOPER_IP}:8081`,
+  `http:${MOBILE_IP}:8081`,
+  `http://${DEVELOPER_IP}:8081`,
 ];
 
 const corsOptions = {
@@ -38,6 +38,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use("/tasks", router);
 app.use("/users", userRouter);
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).send({
