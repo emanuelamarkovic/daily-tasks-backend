@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find().populate("users");
     res.json(tasks);
   } catch (error) {
     console.error(error);
@@ -11,34 +11,30 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-export const createTask =  async (req, res) => {
-  const { title, userId } = req.body;
-
-  // Check if title and userId are provided
-  if (!title || !userId) {
-    return res.status(400).json({ message: "Title and userId are required" });
-  }
+export const createTask = async (req, res) => {
+  const { userId } = req.params;
+  const { title, completed } = req.body;
 
   try {
-    // Check if the user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const task = new Task({
+      title,
+      completed,
+      user: userId,
+    });
 
-    // Create a new task
-    const newTask = new Task({ title, user: userId });
+    const savedTask = await task.save();
 
-    // Save the task to the database
-    await newTask.save();
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { todos: savedTask._id } },
+      { new: true }
+    );
 
-    // Respond with the created task
-    res.status(201).json(newTask);
+    res.status(201).json(savedTask);
   } catch (error) {
-    console.error("Error creating task:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: `Error creating task: ${error.message}` });
   }
-};
+}
 
 export const updateTask = async (req, res) => {
   const { id } = req.params;
@@ -66,3 +62,5 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Serverfehler" });
   }
 };
+
+

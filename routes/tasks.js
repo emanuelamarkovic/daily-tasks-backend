@@ -6,14 +6,14 @@ import {
   createTask,
   updateTask,
   deleteTask,
+
 } from "../controllers/tasksController.js";
 
 const router = express.Router();
 
 router.get("", getAllTasks);
 
-router.post("/addTask", createTask);
-
+router.post("/:userId/tasks", createTask);
 router.put("/:id", updateTask);
 
 router.delete("/:id", deleteTask);
