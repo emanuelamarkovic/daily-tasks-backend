@@ -1,11 +1,10 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import path from 'path';
-import '../config.js'
-
 import { sendPasswordResetEmail } from "../services/emailService.js";
 import { v2 as cloudinary } from "cloudinary";
+import path from "path";
+import '../config.js'
 
 
  const getUserById = async (req, res) => {
@@ -101,7 +100,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userId: user._id };
+    const payload = { userID: user._id };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
@@ -205,25 +204,48 @@ const logout = async (req, res) => {
   }
 };
 
-const uploadAvatarImg = async (req, res) => {
+const uploadAvatarImg =async (req, res) => {
   try {
-    const userId = req.params.id;
-    const image = req.file;
-
-    // Ensure the image file exists
-    if (!image) {
-      return res.status(400).json({ error: 'No image file provided' });
+    const { id } = req.params;
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    // Call the uploadAvatarImg function with userId and image
-    const result = await uploadAvatarImg(userId, image);
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    const { secure_url, public_id } = fileImg;
 
-    // Respond with the result from the uploadAvatarImg function
-    res.status(200).json(result);
+    const userToUpdate = await User.findByIdAndUpdate(
+      id,
+      { avatarImg: { url: secure_url, id: public_id } },
+      { new: true }
+    );
+
+    if (!userToUpdate) {
+      return res.status(404).json({ message: 'User not found!' });
+    }
+
+    const updatedUser = userToUpdate.toObject();
+    delete updatedUser.password;
+    res.json({ message: 'User updated', updatedUser });
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ error: 'Failed to upload avatar image' });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+ const getUserWithTasks = async (req, res) => {
+  const { id } = req.params;
+console.log("sfsf",req.params)
+  try {
+    const user = await User.findById(id).populate("todos");
+    console.log(user)
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: `Error fetching user: ${error.message}` });
   }
 };
 
