@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await User.find().populate("todos");
+    const tasks = await Task.find();
     res.json(tasks);
   } catch (error) {
     console.error(error);
@@ -34,7 +34,7 @@ export const createTask = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: `Error creating task: ${error.message}` });
   }
-}
+};
 
 export const updateTask = async (req, res) => {
   const { id } = req.params;
@@ -62,6 +62,3 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Serverfehler" });
   }
 };
-
-
-
