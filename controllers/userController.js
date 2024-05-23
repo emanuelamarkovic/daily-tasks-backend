@@ -1,6 +1,9 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import path from 'path';
+import '../config.js'
+
 import { sendPasswordResetEmail } from "../services/emailService.js";
 import { v2 as cloudinary } from "cloudinary";
 
