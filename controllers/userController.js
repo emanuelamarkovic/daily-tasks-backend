@@ -98,7 +98,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userID: user._id };
+    const payload = { userId: user._id };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
@@ -116,6 +116,7 @@ const login = async (req, res) => {
       .status(200)
       .json({
         message: "login successfully",
+        user,
         role: user.role,
         refreshToken,
         accesstoken,
@@ -221,7 +222,7 @@ const uploadAvatarImg = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Failed to upload avatar image' });
   }
-}
+};
 
 export {
   getAuthUser,
@@ -232,5 +233,5 @@ export {
   logout,
   uploadAvatarImg,
   getUsers,
-  getUserById
+  getUserById,getUserWithTasks
 };

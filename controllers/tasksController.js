@@ -1,8 +1,9 @@
 import Task from "../models/task.js";
+import User from "../models/user.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await User.find().populate("todos");
     res.json(tasks);
   } catch (error) {
     console.error(error);
@@ -11,16 +12,29 @@ export const getAllTasks = async (req, res) => {
 };
 
 export const createTask = async (req, res) => {
-  const { title } = req.body;
+  const { userId } = req.params;
+  const { title, completed } = req.body;
+
   try {
-    const newTask = new Task({ title });
-    await newTask.save();
-    res.status(201).json(newTask);
+    const task = new Task({
+      title,
+      completed,
+      user: userId,
+    });
+
+    const savedTask = await task.save();
+
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { todos: savedTask._id } },
+      { new: true }
+    );
+
+    res.status(201).json(savedTask);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Serverfehler" });
+    res.status(500).json({ error: `Error creating task: ${error.message}` });
   }
-};
+}
 
 export const updateTask = async (req, res) => {
   const { id } = req.params;
@@ -48,3 +62,6 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ message: "Serverfehler" });
   }
 };
+
+
+
