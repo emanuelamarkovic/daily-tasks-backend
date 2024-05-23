@@ -203,29 +203,25 @@ const logout = async (req, res) => {
 
 const uploadAvatarImg = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log(id);
-    console.log(req.file);
-    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    const userId = req.params.id;
+    const image = req.file;
 
-    const { secure_url, public_id } = fileImg;
-
-    const userToUpdate = await User.findByIdAndUpdate(
-      id,
-      { avatarImg: { url: secure_url, id: public_id } },
-      { new: true }
-    );
-
-    if (!userToUpdate) {
-      return res.status(404).json({ message: "User not found!" });
+    // Ensure the image file exists
+    if (!image) {
+      return res.status(400).json({ error: 'No image file provided' });
     }
-    const updatedUser = userToUpdate.toObject();
-    delete updatedUser.password;
-    res.json({ message: "User updated", updatedUser });
+
+    // Call the uploadAvatarImg function with userId and image
+    const result = await uploadAvatarImg(userId, image);
+
+    // Respond with the result from the uploadAvatarImg function
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Handle any errors
+    console.error(error);
+    res.status(500).json({ error: 'Failed to upload avatar image' });
   }
-};
+}
 
 export {
   getAuthUser,

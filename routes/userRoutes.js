@@ -30,6 +30,6 @@ userRouter.post("/auth-user-data").get(authenticate, getAuthUser);
 
 userRouter
   .route("/upload-avatar/:id")
-  .put(cloudinaryMulter.single("image"), uploadAvatarImg);
+  .post(cloudinaryMulter.single("image"), uploadAvatarImg);
 
 export default userRouter;
