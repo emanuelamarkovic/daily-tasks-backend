@@ -211,12 +211,14 @@ const uploadAvatarImg =async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
+    // Upload to Cloudinary
     const fileImg = await cloudinary.uploader.upload(req.file.path);
     const { secure_url, public_id } = fileImg;
 
+    // Update user with the new avatar image URL and public ID
     const userToUpdate = await User.findByIdAndUpdate(
       id,
-      { avatarImg: { url: secure_url, id: public_id } },
+      { avatarImg: { url: secure_url, id: public_id } }, // Use secure_url from Cloudinary
       { new: true }
     );
 
@@ -231,7 +233,6 @@ const uploadAvatarImg =async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
  const getUserWithTasks = async (req, res) => {
   const { id } = req.params;

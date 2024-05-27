@@ -10,28 +10,30 @@ cloudinary.config({
   api_secret:  process.env.CLOUDINARY_API_SECRET
 });
 
-// Configure Multer storage to Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'uploads',
     format: async (req, file) => {
-      const ext = path.extname(file.originalname).toLowerCase();
-      return ext === '.jpg' || ext === '.jpeg' || ext === '.png' ? 'png' : null; // Set the format to png
+      const ext = path.extname(file.originalname).substring(1);
+      return ext; // supports promises as well
     },
-    public_id: (req, file) => `${Date.now()}-${file.originalname}`,
+    public_id: (req, file) => {
+      return file.originalname;
+    },
   },
 });
 
-const cloudinaryMulter = multer({
+const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
-    let ext = path.extname(file.originalname).toLowerCase();
+    const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
-      return cb(new Error('File type is not supported'), false);
+      cb(new Error('File type is not supported'), false);
+      return;
     }
     cb(null, true);
   },
 });
 
-export default cloudinaryMulter;
+export default upload;

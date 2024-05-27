@@ -20,6 +20,7 @@ import { tokenValid } from "../Middleware/userValidator/tokenValid.js";
 const userRouter = express.Router();
 userRouter.get("/:id", getUserWithTasks)
 import cloudinaryMulter from "../upload-Image.js";
+import upload from "../upload-Image.js";
 //userRouter.get("/:id", getUserById);
 userRouter.post("/signup", userValidator, validate, signup);
 userRouter.post("/login", userValidator, validate, login);
@@ -30,6 +31,6 @@ userRouter.post("/logout", logout);
 userRouter.get("/token-valid", tokenValid);
 userRouter.post("/auth-user-data").get(authenticate, getAuthUser);
 
- userRouter.put('/upload-avatar/:id', cloudinaryMulter.single('image'), uploadAvatarImg);
+ userRouter.put('/upload-avatar/:id', upload.single('image'), uploadAvatarImg);
 
 export default userRouter;
