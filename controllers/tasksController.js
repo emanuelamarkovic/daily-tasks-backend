@@ -6,7 +6,7 @@ export const getAllTasks = async (req, res) => {
     res.json(tasks);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Serverfehler" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -18,33 +18,69 @@ export const createTask = async (req, res) => {
     res.status(201).json(newTask);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Serverfehler" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
 export const updateTask = async (req, res) => {
-  const { id } = req.params;
-  const { title } = req.body;
+  const { _id, title } = req.body;
   try {
     const updatedTask = await Task.findByIdAndUpdate(
-      id,
+      _id,
       { title },
       { new: true }
     );
     res.json(updatedTask);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Serverfehler" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
 export const deleteTask = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.body;
   try {
-    await Task.findByIdAndDelete(id);
-    res.json({ message: "Task gelöscht" });
+    await Task.findByIdAndDelete(_id);
+    res.json({ message: "Task deleted" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Serverfehler" });
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const completeTask = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const updatedTask = await Task.findByIdAndUpdate(
+      _id,
+      {
+        status: "completed",
+      },
+      { new: true }
+    );
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Task marked as complete", task: updatedTask });
+  } catch (error) {
+    res.status(500).json({ error: "Something is wrong" });
+  }
+};
+
+export const completedTasksDate = async (req, res) => {
+  try {
+    const { date } = req.body;
+    const completedTasks = await Task.find({
+      status: "completed",
+      createdAt: {
+        $gte: new Date(`${date}T00:00:00.000Z`),
+        $lt: new Date(`${date}T23:59:59.999Z`),
+      },
+    }).exec();
+    res.status(200).json({ completedTasks });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
