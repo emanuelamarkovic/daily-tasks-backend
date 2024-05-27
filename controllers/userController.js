@@ -1,11 +1,10 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import path from 'path';
-import '../config.js'
-
 import { sendPasswordResetEmail } from "../services/emailService.js";
 import { v2 as cloudinary } from "cloudinary";
+import path from "path";
+import '../config.js'
 
 
  const getUserById = async (req, res) => {
@@ -101,7 +100,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userId: user._id };
+    const payload = { userID: user._id };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
@@ -205,31 +204,36 @@ const logout = async (req, res) => {
   }
 };
 
-const uploadAvatarImg = async (req, res) => {
+const uploadAvatarImg =async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    console.log(req.file);
-    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
 
+    // Upload to Cloudinary
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
     const { secure_url, public_id } = fileImg;
 
+    // Update user with the new avatar image URL and public ID
     const userToUpdate = await User.findByIdAndUpdate(
       id,
-      { avatarImg: { url: secure_url, id: public_id } },
+      { avatarImg: { url: secure_url, id: public_id } }, // Use secure_url from Cloudinary
       { new: true }
     );
 
     if (!userToUpdate) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: 'User not found!' });
     }
+
     const updatedUser = userToUpdate.toObject();
     delete updatedUser.password;
-    res.json({ message: "User updated", updatedUser });
+    res.json({ message: 'User updated', updatedUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
  const getUserWithTasks = async (req, res) => {
   const { id } = req.params;
 console.log("sfsf",req.params)
