@@ -10,10 +10,12 @@ import cookieParser from "cookie-parser";
 import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
 
+
 const app = express();
 const port = process.env.PORT;
 
 app.use(cookieParser());
+app.use(express.json());
 app.use(express.json());
 
 const allowedOrigins = [

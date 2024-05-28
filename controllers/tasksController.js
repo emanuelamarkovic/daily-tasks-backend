@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 export const getAllTasks = async (req, res) => {
   try {
-    const tasks = await User.find().populate("todos");
+    const tasks = await Task.find();
     res.json(tasks);
   } catch (error) {
     console.error(error);
