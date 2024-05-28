@@ -16,12 +16,12 @@ router.get("/tasks", getAllTasks);
 
 router.post("/tasks", createTask);
 
-router.put("/tasks", updateTask);
+router.put("/tasks/:id", updateTask);
 
-router.delete("/tasks", deleteTask);
+router.delete("/tasks/:id", deleteTask);
 
-router.patch("/tasks/complete", completeTask);
+router.patch("/tasks/complete/:id", completeTask);
 
-router.get("/tasks/completed", completedTasksDate);
+router.get("/tasks/completed/:date", completedTasksDate);
 
 export default router;

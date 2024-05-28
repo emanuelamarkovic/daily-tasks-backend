@@ -23,10 +23,11 @@ export const createTask = async (req, res) => {
 };
 
 export const updateTask = async (req, res) => {
-  const { _id, title } = req.body;
+  const { id } = req.params;
+  const { title } = req.body;
   try {
     const updatedTask = await Task.findByIdAndUpdate(
-      _id,
+      id,
       { title },
       { new: true }
     );
@@ -38,9 +39,9 @@ export const updateTask = async (req, res) => {
 };
 
 export const deleteTask = async (req, res) => {
-  const { _id } = req.body;
+  const { id } = req.params;
   try {
-    await Task.findByIdAndDelete(_id);
+    await Task.findByIdAndDelete(id);
     res.json({ message: "Task deleted" });
   } catch (error) {
     console.error(error);
@@ -50,9 +51,9 @@ export const deleteTask = async (req, res) => {
 
 export const completeTask = async (req, res) => {
   try {
-    const { _id } = req.body;
+    const { id } = req.params;
     const updatedTask = await Task.findByIdAndUpdate(
-      _id,
+      id,
       {
         status: "completed",
       },
@@ -71,7 +72,7 @@ export const completeTask = async (req, res) => {
 
 export const completedTasksDate = async (req, res) => {
   try {
-    const { date } = req.body;
+    const { date } = req.params;
     const completedTasks = await Task.find({
       status: "completed",
       createdAt: {
