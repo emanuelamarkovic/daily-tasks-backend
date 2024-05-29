@@ -2,10 +2,11 @@ import { model, Schema } from "mongoose";
 
 const avatarImgSchema = new Schema(
   {
+    _id: Schema.Types.ObjectId,
     url: {
       type: String,
       default: "https://ionicframework.com/docs/img/demos/avatar.svg",
-      required:false
+      required: false,
     },
     id: String,
   },

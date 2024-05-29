@@ -2,7 +2,7 @@
 import {
   toDoValidator,
   validate,
-} from "../Middleware/todoValidator/todos-Validator.js";
+} from "../middleware/todoValidator/todos-Validator.js";
 import express from "express";
 import {
   getAllTasks,

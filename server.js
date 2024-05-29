@@ -5,11 +5,10 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
-import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
+import { refreshAccessToken } from "./middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
 import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
-
 
 const app = express();
 const port = process.env.PORT;

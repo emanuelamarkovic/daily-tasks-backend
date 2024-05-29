@@ -1,13 +1,11 @@
+import "../config.js";
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 import { v2 as cloudinary } from "cloudinary";
-import path from "path";
-import '../config.js'
 
-
- const getUserById = async (req, res) => {
+const getUserById = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -22,7 +20,6 @@ import '../config.js'
     res.status(500).json({ message: "Error finding user", error });
   }
 };
-
 
 const getUsers = async (req, res) => {
   try {
@@ -60,7 +57,7 @@ const signup = async (req, res) => {
     // const fileImg = await cloudinary.uploader.upload(req.file.path);
     // const { secure_url, public_id } = fileImg;
     const newUser = new User({
-     // avatarImg: { url: secure_url, id: public_id },
+      // avatarImg: { url: secure_url, id: public_id },
       username,
       email,
       password: hashedPassword,
@@ -79,7 +76,6 @@ const signup = async (req, res) => {
       .status(500)
       .json({ message: "Error signing up. Please try again later." });
   }
-  
 };
 
 const login = async (req, res) => {
@@ -204,42 +200,40 @@ const logout = async (req, res) => {
   }
 };
 
-const uploadAvatarImg =async (req, res) => {
+const uploadAvatarImg = async (req, res) => {
+  console.log("req.body:", req.body);
   try {
-    const { id } = req.params;
+    const userId = req.params.userId;
+    console.log("req.file:", req.file);
     if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+      return res.status(400).json({ message: "No file uploaded" });
     }
-
-    // Upload to Cloudinary
     const fileImg = await cloudinary.uploader.upload(req.file.path);
     const { secure_url, public_id } = fileImg;
 
-    // Update user with the new avatar image URL and public ID
     const userToUpdate = await User.findByIdAndUpdate(
-      id,
-      { avatarImg: { url: secure_url, id: public_id } }, // Use secure_url from Cloudinary
+      userId,
+      { avatarImg: { url: secure_url, id: public_id } },
       { new: true }
     );
 
     if (!userToUpdate) {
-      return res.status(404).json({ message: 'User not found!' });
+      return res.status(404).json({ message: "User not found!" });
     }
-
     const updatedUser = userToUpdate.toObject();
     delete updatedUser.password;
-    res.json({ message: 'User updated', updatedUser });
+    res.json({ message: "User updated", updatedUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
- const getUserWithTasks = async (req, res) => {
+const getUserWithTasks = async (req, res) => {
   const { id } = req.params;
-console.log("sfsf",req.params)
+  console.log("sfsf", req.params);
   try {
     const user = await User.findById(id).populate("todos");
-    console.log(user)
+    console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -259,5 +253,6 @@ export {
   logout,
   uploadAvatarImg,
   getUsers,
-  getUserById,getUserWithTasks
+  getUserById,
+  getUserWithTasks,
 };
