@@ -10,7 +10,6 @@ import cookieParser from "cookie-parser";
 import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
 
-
 const app = express();
 const port = process.env.PORT;
 
@@ -38,7 +37,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use("/tasks", router);
+app.use("/", router);
 app.use("/users", userRouter);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
