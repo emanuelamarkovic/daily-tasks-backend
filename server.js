@@ -37,7 +37,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use("/tasks", router);
+app.use("/", router);
 app.use("/users", userRouter);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);

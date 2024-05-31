@@ -10,15 +10,15 @@ const taskSchema = new Schema({
     enum: ["pending", "completed"],
     default: "pending",
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+  category: {
+    type: String,
+    required: true,
+  },
+  dueDate: {
+    type: String,
+    required: true,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
     type: Date,
     default: Date.now,
   },
