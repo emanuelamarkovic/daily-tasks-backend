@@ -200,6 +200,19 @@ const logout = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const uploadAvatarImg = async (req, res) => {
   console.log("req.body:", req.body);
   try {
@@ -251,6 +264,7 @@ export {
   forgotPassword,
   resetPassword,
   logout,
+  deleteUser,
   uploadAvatarImg,
   getUsers,
   getUserById,

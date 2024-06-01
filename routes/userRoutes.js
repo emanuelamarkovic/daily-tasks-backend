@@ -11,6 +11,7 @@ import {
   forgotPassword,
   resetPassword,
   logout,
+  deleteUser,
   uploadAvatarImg,
   getAuthUser,
   getUserById,
@@ -31,6 +32,7 @@ userRouter.get("/", getUsers);
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/reset-password/:userId/:token", resetPassword);
 userRouter.post("/logout", logout);
+userRouter.delete("/:id", deleteUser);
 userRouter.get("/token-valid", tokenValid);
 userRouter.post("/auth-user-data").get(authenticate, getAuthUser);
 
