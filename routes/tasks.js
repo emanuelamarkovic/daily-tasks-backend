@@ -8,12 +8,13 @@ import {
   /* getAllTasks,
   createTask,
   updateTask,
-  deleteTask, */
+  deleteTask,*/
   addTodo,
   getUserTodos,
   markTodoComplete,
   getCompletedTodosByDate,
   getTodoCount,
+  deleteTodo,
 } from "../controllers/tasksController.js";
 
 const router = express.Router();
@@ -30,5 +31,6 @@ router.get("/users/:userId/todos", getUserTodos);
 router.patch("/todos/:todoId/complete", markTodoComplete);
 router.get("/todos/completed/:date", getCompletedTodosByDate);
 router.get("/todos/count", getTodoCount);
+router.delete("/todos/:todoId", deleteTodo);
 
 export default router;
