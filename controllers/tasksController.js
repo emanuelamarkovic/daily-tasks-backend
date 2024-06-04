@@ -210,3 +210,24 @@ export const deleteTodo = async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const editTodo = async (req, res) => {
+  try {
+    const todoId = req.params.todoId;
+    const { title, category, dueDate } = req.body;
+    const updatedTodo = await Task.findByIdAndUpdate(
+      todoId,
+      { title, category, dueDate },
+      { new: true }
+    );
+    if (!updatedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Todo updated successfully", todo: updatedTodo });
+  } catch (error) {
+    console.error("Error updating todo:", error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
