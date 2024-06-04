@@ -186,3 +186,48 @@ export const getTodoCount = async (req, res) => {
     res.status(500).json({ error: "Network error" });
   }
 };
+
+export const deleteTodo = async (req, res) => {
+  try {
+    const todoId = req.params.todoId;
+
+    // Finde und lösche das Todo
+    const deletedTodo = await Task.findByIdAndDelete(todoId);
+    if (!deletedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    // Finde den Benutzer und entferne das Todo aus seiner Todo-Liste
+    const user = await User.findOne({ todos: todoId });
+    if (user) {
+      user.todos.pull(todoId);
+      await user.save();
+    }
+
+    return res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting todo:", error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const editTodo = async (req, res) => {
+  try {
+    const todoId = req.params.todoId;
+    const { title, category, dueDate } = req.body;
+    const updatedTodo = await Task.findByIdAndUpdate(
+      todoId,
+      { title, category, dueDate },
+      { new: true }
+    );
+    if (!updatedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Todo updated successfully", todo: updatedTodo });
+  } catch (error) {
+    console.error("Error updating todo:", error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
