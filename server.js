@@ -9,6 +9,7 @@ import { refreshAccessToken } from "./middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
 import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
+import noteRouter from "./routes/noteRoutes.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -39,6 +40,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use("/", router);
 app.use("/users", userRouter);
+app.use("/notes", noteRouter);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
