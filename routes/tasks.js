@@ -8,6 +8,7 @@ import {
   addTodo,
   getUserTodos,
   markTodoComplete,
+  updateTaskTime,
   getCompletedTodosByDate,
   getTodoCount,
   deleteTodo,
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post("/todos/:userId", addTodo);
 router.get("/users/:userId/todos", getUserTodos);
 router.patch("/todos/:todoId/complete", markTodoComplete);
+router.patch("/stopwatch/:id", updateTaskTime);
 router.get("/todos/completed/:date", getCompletedTodosByDate);
 router.get("/todos/count", getTodoCount);
 router.delete("/todos/:todoId", deleteTodo);

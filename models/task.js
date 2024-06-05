@@ -14,6 +14,7 @@ const taskSchema = new Schema({
     type: String,
     required: true,
   },
+  elapsedTime: { type: Number, default: 0 },
   dueDate: {
     type: String,
     required: true,
