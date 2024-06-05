@@ -5,10 +5,6 @@ import {
 } from "../middleware/todoValidator/todos-Validator.js";
 import express from "express";
 import {
-  /* getAllTasks,
-  createTask,
-  updateTask,
-  deleteTask,*/
   addTodo,
   getUserTodos,
   markTodoComplete,
@@ -19,14 +15,6 @@ import {
 } from "../controllers/tasksController.js";
 
 const router = express.Router();
-
-/* router.get("/", getAllTasks);
-
-router.post("/addTask", createTask);
-router.put("/:id", updateTask);
-
-
-router.delete("/:id", deleteTask); */
 
 router.post("/todos/:userId", addTodo);
 router.get("/users/:userId/todos", getUserTodos);
