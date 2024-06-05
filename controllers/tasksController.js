@@ -158,14 +158,29 @@ export const markTodoComplete = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const updateTaskTime = async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { elapsedTime },
+      { new: true }
+    );
+    if (!task) return res.status(404).json({ message: "Task not found" });
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getCompletedTodosByDate = async (req, res) => {
   try {
     const date = req.params.date;
-    const completedTodos = await Todo.find({
+    const completedTodos = await Task.find({
       status: "completed",
       createdAt: {
-        $gte: new Date(`${date}T00:00:00.000Z`), // Start of the selected date
-        $lt: new Date(`${date}T23:59:59.999Z`), // End of the selected date
+        $gte: new Date(`${date}T00:00:00.000Z`),
+        $lt: new Date(`${date}T23:59:59.999Z`),
       },
     }).exec();
     res.status(200).json({ completedTodos });
@@ -173,13 +188,17 @@ export const getCompletedTodosByDate = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
 export const getTodoCount = async (req, res) => {
   try {
-    const totalCompletedTodos = await Todo.countDocuments({
+    const userId = req.params.userId;
+    const totalCompletedTodos = await Task.countDocuments({
       status: "completed",
+      userId: userId,
     }).exec();
-    const totalPendingTodos = await Todo.countDocuments({
+    const totalPendingTodos = await Task.countDocuments({
       status: "pending",
+      userId: userId,
     }).exec();
     res.status(200).json({ totalCompletedTodos, totalPendingTodos });
   } catch (error) {
@@ -191,13 +210,11 @@ export const deleteTodo = async (req, res) => {
   try {
     const todoId = req.params.todoId;
 
-    // Finde und lösche das Todo
     const deletedTodo = await Task.findByIdAndDelete(todoId);
     if (!deletedTodo) {
       return res.status(404).json({ error: "Todo not found" });
     }
 
-    // Finde den Benutzer und entferne das Todo aus seiner Todo-Liste
     const user = await User.findOne({ todos: todoId });
     if (user) {
       user.todos.pull(todoId);
