@@ -1,4 +1,6 @@
+import "../config.js";
 import User from "../models/user.js";
+import Note from "../models/note.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
@@ -97,7 +99,7 @@ const login = async (req, res) => {
     }
     const user = foundUser.toObject();
     delete user.password;
-    const payload = { userId: user._id };
+    const payload = { userID: user._id };
     const accesstoken = jwt.sign(payload, process.env.SECRETKEY, {
       expiresIn: "1h",
     });
@@ -201,17 +203,38 @@ const logout = async (req, res) => {
   }
 };
 
-const uploadAvatarImg = async (req, res) => {
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    console.log(id);
-    console.log(req.file);
-    const fileImg = await cloudinary.uploader.upload(req.file.path);
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    await Note.deleteMany({ user: id });
+
+    res.status(200).json({
+      message: "User and associated notes deleted successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const uploadAvatarImg = async (req, res) => {
+  console.log("req.body:", req.body);
+  try {
+    const userId = req.params.userId;
+    console.log("req.file:", req.file);
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const fileImg = await cloudinary.uploader.upload(req.file.path);
     const { secure_url, public_id } = fileImg;
 
     const userToUpdate = await User.findByIdAndUpdate(
-      id,
+      userId,
       { avatarImg: { url: secure_url, id: public_id } },
       { new: true }
     );
@@ -226,6 +249,7 @@ const uploadAvatarImg = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const getUserWithTasks = async (req, res) => {
   const { id } = req.params;
   console.log("sfsf", req.params);
@@ -249,6 +273,7 @@ export {
   forgotPassword,
   resetPassword,
   logout,
+  deleteUser,
   uploadAvatarImg,
   getUsers,
   getUserById,

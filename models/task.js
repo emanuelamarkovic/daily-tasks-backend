@@ -5,23 +5,25 @@ const taskSchema = new Schema({
     type: String,
     required: true,
   },
-  completed: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    enum: ["pending", "completed"],
+    default: "pending",
   },
-  users: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+  category: {
+    type: String,
+    required: true,
+  },
+  notes: [{ type: Schema.Types.ObjectId, ref: "Note" }],
+  elapsedTime: { type: Number, default: 0 },
+  dueDate: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  user: { type: Schema.Types.ObjectId, ref: "User" }
 });
 
 const Task = model("Task", taskSchema);

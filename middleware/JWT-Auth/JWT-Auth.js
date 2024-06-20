@@ -17,7 +17,7 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// Refresh Token Middleware
+// Refresh Token middleware
 const refreshAccessToken = (req, res, next) => {
   // Check if the access token has expired
   const token = req.cookies.accessToken;
@@ -37,7 +37,7 @@ const refreshAccessToken = (req, res, next) => {
 
     try {
       // Verify the refresh token
-      const decoded = jwt.verify(refreshToken, process.env.refreshAccessToken);
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKENS);
       // If refresh token is valid, generate a new access token
       const newAccessToken = jwt.sign(
         { userId: decoded.userId },

@@ -5,22 +5,26 @@ import router from "./routes/tasks.js";
 import logEndPoints from "./utils/logEndpoints.js";
 import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
-import { refreshAccessToken } from "./Middleware/JWT-Auth/JWT-Auth.js";
+import { refreshAccessToken } from "./middleware/JWT-Auth/JWT-Auth.js";
 import cookieParser from "cookie-parser";
 import { MOBILE_IP } from "./config.js";
 import { DEVELOPER_IP } from "./config.js";
+import noteRouter from "./routes/noteRoutes.js";
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:19006",
   "https://daily-tasks-app-my36.onrender.com",
   `http://${DEVELOPER_IP}:8081`,
+
   `http://${MOBILE_IP}:8081`,
+
 ];
 
 const corsOptions = {
@@ -36,8 +40,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use("/tasks", router);
+app.use("/", router);
 app.use("/users", userRouter);
+app.use("/notes", noteRouter);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
