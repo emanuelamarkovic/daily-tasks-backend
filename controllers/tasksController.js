@@ -28,6 +28,7 @@ export const addTodo = async (req, res) => {
       .json({ message: "Todo not added", error: error.message });
   }
 };
+
 export const getUserTodos = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -40,6 +41,7 @@ export const getUserTodos = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
 export const markTodoComplete = async (req, res) => {
   try {
     const todoId = req.params.todoId;
@@ -93,15 +95,14 @@ export const getCompletedTodosByDate = async (req, res) => {
 
 export const getTodoCount = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const totalCompletedTodos = await Task.countDocuments({
+    const totalCompletedTodos = await Todo.countDocuments({
       status: "completed",
-      userId: userId,
     }).exec();
-    const totalPendingTodos = await Task.countDocuments({
+
+    const totalPendingTodos = await Todo.countDocuments({
       status: "pending",
-      userId: userId,
     }).exec();
+
     res.status(200).json({ totalCompletedTodos, totalPendingTodos });
   } catch (error) {
     res.status(500).json({ error: "Network error" });

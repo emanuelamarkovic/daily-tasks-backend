@@ -14,6 +14,7 @@ const taskSchema = new Schema({
     type: String,
     required: true,
   },
+  notes: [{ type: Schema.Types.ObjectId, ref: "Note" }],
   elapsedTime: { type: Number, default: 0 },
   dueDate: {
     type: String,

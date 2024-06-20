@@ -1,4 +1,5 @@
 import Note from "../models/note.js";
+import Task from "../models/task.js";
 
 export const getNotesByUserId = async (req, res) => {
   try {
@@ -53,5 +54,33 @@ export const addNote = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const addNoteToTask = async (req, res) => {
+  try {
+    const taskId = req.params.taskId;
+    const { title, content, date, user } = req.body;
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    const note = new Note({
+      title,
+      content,
+      date,
+      user,
+    });
+
+    await note.save();
+
+    task.notes.push(note._id);
+    await task.save();
+
+    res.status(201).json(note);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };

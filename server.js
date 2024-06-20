@@ -23,6 +23,7 @@ const allowedOrigins = [
   "https://daily-tasks-app-my36.onrender.com",
   `http:${MOBILE_IP}:8081`,
   `http://${DEVELOPER_IP}:8081`,
+  `http://${DEVELOPER_IP}:8082`,
 ];
 
 const corsOptions = {
