@@ -21,9 +21,10 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:19006",
   "https://daily-tasks-app-my36.onrender.com",
-  `http:${MOBILE_IP}:8081`,
   `http://${DEVELOPER_IP}:8081`,
-  `http://${DEVELOPER_IP}:8082`,
+
+  `http://${MOBILE_IP}:8081`,
+
 ];
 
 const corsOptions = {
@@ -59,6 +60,6 @@ app.use((err, req, res, next) => {
 app.use(refreshAccessToken);
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://${DEVELOPER_IP}:${port}`);
   logEndPoints(app, port);
 });

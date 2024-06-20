@@ -4,6 +4,7 @@ import Note from "../models/note.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendPasswordResetEmail } from "../services/emailService.js";
+import { sendSignupConfirmationEmail } from "../services/sendSignupConfirmationEmail.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const getUserById = async (req, res) => {
@@ -70,6 +71,7 @@ const signup = async (req, res) => {
     }
     await newUser.save();
     newUser.password = undefined;
+    await sendSignupConfirmationEmail(email, username);
     res.status(200).json({ message: "New User added! 🐒", newUser });
   } catch (error) {
     console.error("Error signing up:", error);

@@ -15,10 +15,16 @@ const sendPasswordResetEmail = async (recipientEmail, userId, token) => {
     to: recipientEmail,
     subject: "Password Reset for Daily Tasks",
     html: ` <p>Hi there,</p>
-    <p>We received a request to reset your password. Please follow the link below to reset your password:</p>
-    <a href="http://localhost:19006/reset-password/${userId.toString()}/${token}" >Reset Password</a>
-    <p>If you did not request this password reset, you can safely ignore this email.</p>
-    <p>Best regards,<br/>Your Daily Tasks Team</p>`,
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <h2 style="color: #4CAF50;">Password Reset Successful</h2>
+    <p>Your password has been successfully reset. You can now log in with your new password.</p>
+    <p>Best regards,<br/>
+    <span style="font-weight: bold;">Your Daily Tasks Team</span></p>
+  </div>
+  <footer style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #ccc;">
+    <p style="font-size: 0.8em; color: #777;">If you did not reset your password, please contact our support team immediately.</p>
+  </footer>
+  `,
   };
 
   try {
